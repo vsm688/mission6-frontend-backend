@@ -1,0 +1,43 @@
+# docker-compose.yml
+version: "3.8"
+services:
+  back-end:
+    build: ./backend
+    container_name: backend
+    ports:
+      - '5000:5000'
+    networks:
+      - mern-app
+    links:
+      - mongo
+
+  front-end:
+    build: ./frontend
+    container_name: frontend
+    ports: 
+      - '3000:3000'
+    stdin_open: true
+    tty: true
+    networks:
+      - mern-app
+    depends_on:
+      - mongo 
+  mongo: 
+    image: mongo:4.4-bionic
+    ports:
+      - "27017:27017"
+    networks:
+      - mern-app
+    
+    volumes: 
+      - mongo-data:/data/db
+
+networks:
+  mern-app:
+    driver: bridge
+  
+
+
+volumes:
+  mongo-data:
+    driver: local
